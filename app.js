@@ -1,28 +1,17 @@
-// Import required modules
-const express = require("express");
-const mongoose = require('mongoose');
-const projectsRoute = require('./routes/projects'); // Import the projects route
-
-// Create an Express application instance
+const express = require('express');
 const app = express();
+const routes = require('./routes');
 
-// Middleware to parse JSON requests
-app.use(express.json());
+// Middleware
+app.use(express.json()); // Parse JSON request bodies
+app.use('/api', routes); // Mount routes under /api prefix
 
-// Middleware to parse URL-encoded requests
-app.use(express.urlencoded({ extended: false }));
-
-// Serve static files from the public directory (if needed)
-app.use(express.static(__dirname + '/public'));
-
-// Define routes
-app.use('/api/projects', projectsRoute); // Mount the projects route under /api/projects
-
-// Define a route for the root URL
+// Define a simple route for the root URL
 app.get('/', (req, res) => {
   res.send('Welcome to your Express.js MVC app!');
 });
 
+<<<<<<< HEAD
 // MongoDB connection
 mongoose.connect('mongodb+srv://Ndungu:Ndungu@cluster0.mhjgspt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
@@ -34,7 +23,21 @@ const port = process.env.PORT || 3000;
 // Start the server and listen on the specified port
 app.listen(port, () => {
     console.log("App listening on port: " + port);
+=======
+// Define a route for handling 404 errors
+app.use((req, res, next) => {
+  res.status(404).send("Sorry, can't find that!");
+>>>>>>> parent of 1f2500c (tests)
 });
 
-// Export the Express app instance (if needed)
-module.exports = app;
+// Define a route for handling errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
